@@ -12,10 +12,26 @@ import { theme } from "./colors";
 export default function App() {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
+  const [toDos, setToDos] = useState({}); // <- hashmap??
+
   const travel = () => setWorking(false);
   const work = () => setWorking(true);
   const onChangeText = payload => setText(payload);
+  const addTodo = () => {
+    if (text === "") {
+      return;
+    }
+    // work에서 온것과 travel에서 온 것을 구별하기 위해
+    // 첫번째 값은 수정할 수 없으니 set을 이용해서
+    // 전에 쓰던걸 새로운 것에 붙여야 된다
+    const newTodos = Object.assign({}, toDos, {
+      [Date.now()]: { text, work: working },
+    });
+    setToDos(newTodos);
+    //save Todo
+    setText("");
 
+  };
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -38,16 +54,14 @@ export default function App() {
           </Text>
         </TouchableOpacity>
       </View>
-      <View>
-        <TextInput
-          onChangeText={onChangeText}
-          blurOnSubmit
-          autoCorrect
-          multiline
-          placeholder={working ? "Add To do!!" : "Where do you want to go?"}
-          style={styles.input}
-        />
-      </View>
+      <TextInput
+        onSubmitEditing={addTodo}
+        onChangeText={onChangeText}
+        returnKeyType="done"
+        value={text}
+        placeholder={working ? "Add To do!!" : "Where do you want to go?"}
+        style={styles.input}
+      />
     </View>
   );
 }
