@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { theme } from "./colors";
 
@@ -24,13 +25,10 @@ export default function App() {
     // work에서 온것과 travel에서 온 것을 구별하기 위해
     // 첫번째 값은 수정할 수 없으니 set을 이용해서
     // 전에 쓰던걸 새로운 것에 붙여야 된다
-    const newTodos = Object.assign({}, toDos, {
-      [Date.now()]: { text, work: working },
-    });
+    const newTodos = { ...toDos, [Date.now()]: { text, work: working }, };
     setToDos(newTodos);
     //save Todo
     setText("");
-
   };
   return (
     <View style={styles.container}>
@@ -62,6 +60,14 @@ export default function App() {
         placeholder={working ? "Add To do!!" : "Where do you want to go?"}
         style={styles.input}
       />
+      <ScrollView>
+        {/*keys로 object{}를 가져온다. map으로 각 항목을 경유하고, 내가 보낸 텍스트를 보여주고 있다 */}
+        {Object.keys(toDos).map(key => (
+          <View style={styles.toDo} key={key}>
+            <Text style={styles.toDoText}>{toDos[key].text}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -87,7 +93,19 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 30,
-    marginTop: 20,
+    marginVertical: 20,
     fontSize: 18,
+  },
+  toDo: {
+    backgroundColor: theme.grey,
+    marginBottom: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderRadius: 15,
+  },
+  toDoText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "500",
   },
 });
