@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  Alert,
 } from "react-native";
 import { theme } from "./colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { Fontisto } from "@expo/vector-icons";
 const STORAGE_KEY = "@toDos";
 
 export default function App() {
@@ -57,6 +58,22 @@ export default function App() {
     setText("");
   };
 
+  const deleteToDo = key => {
+    Alert.alert("Delete To Do", "Are you Sure?", [
+      { text: "Cancel" },
+      {
+        text: "Yes!",
+        onPress: () => {
+          //key(할일)는 시간을 기준으로 생성되서 시간대에 적힌 글을 지우자
+          const newToDos = { ...toDos }; //복사?? 비어있는 새 object를 만들어준다
+          delete newToDos[key]; //아니 delete가 그냥 되어있네??
+          setToDos(newToDos); //삭제한 내역을 업뎃시킨다
+          saveToDos(newToDos); //삭제한 내역을 저장시킨다
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -94,6 +111,9 @@ export default function App() {
           toDos[key].working === working ? (
             <View style={styles.toDo} key={key}>
               <Text style={styles.toDoText}>{toDos[key].text}</Text>
+              <TouchableOpacity onPress={() => deleteToDo(key)}>
+                <Fontisto name="trash" size={20} color={theme.grey} />
+              </TouchableOpacity>
             </View>
           ) : null
         )}
@@ -130,11 +150,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   toDo: {
-    backgroundColor: theme.grey,
+    backgroundColor: theme.toDoBg,
     marginBottom: 10,
     paddingVertical: 20,
     paddingHorizontal: 20,
     borderRadius: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   toDoText: {
     color: "white",
