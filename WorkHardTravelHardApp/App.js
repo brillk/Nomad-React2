@@ -40,7 +40,7 @@ export default function App() {
 
   const loadToDos = async () => {
     const s = await AsyncStorage.getItem(STORAGE_KEY);
-    setToDos(JSON.parse(s));
+    s !== null ? setToDos(JSON.parse(s)) : null;
   };
 
   const addTodo = async () => {
@@ -80,7 +80,7 @@ export default function App() {
         </TouchableOpacity>
       </View>
       <TextInput
-        onSubmitEditing={addToDo}
+        onSubmitEditing={addTodo}
         onChangeText={onChangeText}
         returnKeyType="done"
         value={text}
